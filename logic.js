@@ -26,7 +26,7 @@ function startGame() {
 
 
      // Reset
-     guessesleft = 9;
+     guessesLeft = 9;
      wrongLetters = [];
      blanksAndSuccesses = [];
 ; 
@@ -48,10 +48,89 @@ function startGame() {
      console.log(blanksAndSuccesses);
 }
 
+function checkLetter(letter){
+    //check if letter exixt in code at all
+    
+    
+    var isLetterInWord = false;
+
+    for (var i = 0; i<numBlanks; i++){
+         if(selectedWord[i] == letter){
+             isLetterInWord = true;
+             
+         } 
+    }
+         //Check where in word letter exits, then populate out blanksAndSuccesses array
+         if(isLetterInWord){
+         for (var i = 0; i<numBlanks; i++){
+            if(selectedWord[i] == letter){
+               blanksAndSuccesses[i] = letter;
+                
+            }
+          }
+        }
+        // Letter wasn't found
+         else{
+              wrongLetters.push(letter);
+              guessesLeft--;
+         }
+
+         //Testing and Debugging
+         console.log(blanksAndSuccesses);
+
+}
+
+function roundComplete(){
+    console.log("Win Count: " + winCount + " | Loss Count: " +lossCount+" | Guesses Left " +guessesLeft);
+
+    // Update the HTML to reflect the most recent count stats
+    document.getElementById("numGuesses").innerHTML = guessesLeft;
+    document.getElementById("wordToGuess").innerHTML = blanksAndSuccesses.join(" ");
+    document.getElementById("wrongGuesses").innerHTML = wrongLetters.join(" ");
+
+
+    // Check if user won
+    if(lettersinWord.toString() == blanksAndSuccesses.toString()){
+        winCount++;
+        alert("You Won");
+
+        // Update the win counter in the HTML
+        document.getElementById("winCounter").innerHTML = winCount;
+
+        startGame();
+    
+    }
+
+    // Check if user lost
+    else if (guessesLeft == 0){
+        lossCount++;
+        alert("You Lost!");
+        
+    
+        //Update HTML
+        document.getElementById("lossCounter").innerHTML = lossCount;
+
+        startGame();
+    }
+
+
+}
+
 
 // MAIN PROCESS
 // ==============================================================================================
+
+// Initiates the code the first time
 startGame();
 
+// Register keyclicks
 
+document.onkeyup = function(event){
+    var letterGuessed = String.fromCharCode(event.keyCode).toLowerCase();
+    checkLetter(letterGuessed);
+    roundComplete();
+    
+//Testing / Debugging
+    console.log(letterGuessed);
 
+}
